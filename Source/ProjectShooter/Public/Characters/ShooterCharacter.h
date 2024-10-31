@@ -26,4 +26,18 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+private:
+	void MoveForward(float AxisValue);
+	void MoveRight(float AxisValue);
+
+
+	//
+
+	UPROPERTY(VisibleAnywhere,Category = "Camera")
+	class USpringArmComponent* CameraBoom;
+
+	UPROPERTY(VisibleAnywhere, Category = "Camera")
+	class UCameraComponent* FollowCamera; 
+
+
 };

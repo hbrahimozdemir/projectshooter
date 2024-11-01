@@ -4,6 +4,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Weapon/Weapon.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -35,6 +36,8 @@ AShooterCharacter::AShooterCharacter()
 void AShooterCharacter::BeginPlay()
 {
     Super::BeginPlay();
+
+    Weapon = GetWorld()->SpawnActor<AWeapon>(WeaponClass);
 }
 
 // Called every frame

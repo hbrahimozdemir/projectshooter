@@ -24,8 +24,8 @@ private:
 	UPROPERTY(VisibleAnywhere, Category="Weapon Properties")
 	USkeletalMeshComponent* WeaponMesh;
 
-	UPROPERTY(VisibleAnywhere, Category="Weapon Properties")
-	class USphereComponent* WeaponSphere;
+	UPROPERTY(VisibleAnywhere, Category= "Weapon Properties")
+	class USceneComponent* WeaponRoot;
 
 
 };

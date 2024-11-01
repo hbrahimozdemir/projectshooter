@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "ShooterCharacter.generated.h"
 
+class AWeapon;
+
 UCLASS()
 class PROJECTSHOOTER_API AShooterCharacter : public ACharacter
 {
@@ -50,6 +52,11 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	class UCameraComponent* FollowCamera; 
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AWeapon> WeaponClass;
 
+
+	UPROPERTY()
+	AWeapon* Weapon;
 
 };

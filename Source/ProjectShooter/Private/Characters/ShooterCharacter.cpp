@@ -3,6 +3,7 @@
 
 #include "Characters/ShooterCharacter.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 
 // Sets default values
@@ -19,6 +20,9 @@ AShooterCharacter::AShooterCharacter()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	FollowCamera->SetupAttachment(CameraBoom);
 	FollowCamera->bUsePawnControlRotation = false;
+
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 }
 
 // Called when the game starts or when spawned
@@ -49,18 +53,30 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 
 }
+void AShooterCharacter::Move(const float AxisValue, const EAxis::Type Axis)
+{
+	if (Controller && AxisValue != 0.f)
+	{
+		// Only calculate the rotation once
+		const FRotator YawRotation(0.f, Controller->GetControlRotation().Yaw, 0.f);
+
+		// Determine direction based on the axis specified
+		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(Axis);
+
+		// Apply movement input
+		AddMovementInput(Direction, AxisValue);
+	}
+}
 
 void AShooterCharacter::MoveForward(float AxisValue)
 {
-	AddMovementInput(GetActorForwardVector() * AxisValue);
-
+	Move(AxisValue, EAxis::X);
 }
 
 void AShooterCharacter::MoveRight(float AxisValue)
 {
-	AddMovementInput(GetActorRightVector() * AxisValue);
+	Move(AxisValue, EAxis::Y);
 }
-
 void AShooterCharacter::CharacterRunning()
 {
 }

@@ -24,7 +24,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(VisibleAnywhere, Category = "Weapon")
-	class UStaticMeshComponent* WeaponMesh;
-	UPROPERTY(VisibleAnywhere, Category = "Weapon")
-	class USphereComponent* WeaponSphere;
+	class USkeletalMeshComponent* WeaponMesh;
+	
 };

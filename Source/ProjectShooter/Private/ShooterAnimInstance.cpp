@@ -14,24 +14,30 @@ void UShooterAnimInstance::NativeInitializeAnimation()
 
 void UShooterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 {
-	Super::NativeUpdateAnimation(DeltaTime);
+    Super::NativeUpdateAnimation(DeltaTime);
 
-	if (ShooterCharacter == nullptr)
-	{
-		ShooterCharacter= Cast<AShooterCharacter>(TryGetPawnOwner());
-	}
+    if (ShooterCharacter == nullptr)
+    {
+        ShooterCharacter = Cast<AShooterCharacter>(TryGetPawnOwner());
+    }
 
-	if (ShooterCharacter == nullptr) return;
+    if (ShooterCharacter == nullptr) return;
 
-	FVector Velocity = ShooterCharacter->GetVelocity();
-	Velocity.Z = 0.f;
-	Speed = Velocity.Size();
+    // Get the character's velocity and remove the Z component
+    FVector Velocity = ShooterCharacter->GetVelocity();
+    Velocity.Z = 0.f;
+    Speed = Velocity.Size();
 
-	bIsInAir = ShooterCharacter->GetCharacterMovement()->IsFalling();
+    // Calculate if the character is in the air
+    bIsInAir = ShooterCharacter->GetCharacterMovement()->IsFalling();
 
-	bIsAccelerating = ShooterCharacter->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0.f ? true : false;
+    // Determine if accelerating
+    bIsAccelerating = ShooterCharacter->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0.f;
 
-	bIsCrouching = ShooterCharacter->GetCharacterMovement()->IsCrouching();
+    // Check if crouching
+    bIsCrouching = ShooterCharacter->GetCharacterMovement()->IsCrouching();
 
-
+    // Calculate the direction relative to the character’s facing direction
+    Direction = CalculateDirection(Velocity, ShooterCharacter->GetActorRotation());
 }
+

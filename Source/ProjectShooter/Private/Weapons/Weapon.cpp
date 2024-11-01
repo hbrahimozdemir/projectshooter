@@ -2,19 +2,20 @@
 
 
 #include "Weapons/Weapon.h"
-#include "Components/SphereComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 
 // Sets default values
 AWeapon::AWeapon()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
-	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponMesh"));
-	SetRootComponent(WeaponMesh);
-
-	WeaponSphere = CreateDefaultSubobject<USphereComponent>(TEXT("WeaponSphere"));
-	WeaponSphere->SetupAttachment(WeaponMesh);
+	PrimaryActorTick.bCanEverTick = false;
+	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
+	WeaponMesh->SetupAttachment(RootComponent);
+	WeaponMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+	WeaponMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
+	
 
 }
 

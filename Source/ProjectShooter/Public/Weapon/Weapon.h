@@ -21,10 +21,10 @@ protected:
 
 private:
 
-	UPROPERTY(VisibleAnywhere, Categort="Weapon Properties")
+	UPROPERTY(VisibleAnywhere, Category="Weapon Properties")
 	USkeletalMeshComponent* WeaponMesh;
 
-	UPROPERTY(VisibleAnywhere, Categort="Weapon Properties")
+	UPROPERTY(VisibleAnywhere, Category="Weapon Properties")
 	class USphereComponent* WeaponSphere;
 
 

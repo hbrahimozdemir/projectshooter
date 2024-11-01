@@ -3,6 +3,7 @@
 
 #include "Weapon/Weapon.h"
 #include "Kismet/GameplayStatics.h"
+#include "DrawDebugHelpers.h"
 
 
 // Sets default values
@@ -24,6 +25,26 @@ AWeapon::AWeapon()
 void AWeapon::PullTrigger()
 {
 	UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, WeaponMesh, TEXT("Muzzle"));
+
+	APawn* OwnerPawn = Cast<APawn>(GetOwner());
+	if (OwnerPawn == nullptr) return;
+	AController* OwnerController = OwnerPawn->GetController();
+	if (OwnerController == nullptr)return;
+	FVector Location;
+	FRotator Rotation;
+	OwnerController->GetPlayerViewPoint(Location,Rotation);
+	
+	FVector TraceEnd = Location + Rotation.Vector() * BulletRange;
+	
+
+	
+
+	FHitResult Hit;
+	bool bSuccess=GetWorld()->LineTraceSingleByChannel(Hit, Location, TraceEnd, ECollisionChannel::ECC_GameTraceChannel1);
+	if (bSuccess)
+	{
+		DrawDebugPoint(GetWorld(), Hit.Location, 20, FColor::Red, true);
+	}
 }
 
 // Called when the game starts or when spawned

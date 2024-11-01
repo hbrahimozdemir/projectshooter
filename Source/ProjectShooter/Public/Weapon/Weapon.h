@@ -32,4 +32,7 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	UParticleSystem* MuzzleFlash;
+
+	UPROPERTY(EditAnywhere)
+	float BulletRange=1000;
 };

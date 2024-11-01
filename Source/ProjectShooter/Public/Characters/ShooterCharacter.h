@@ -35,7 +35,11 @@ private:
 
 	void MoveRight(float AxisValue);
 
-	void CharacterRunning();
+	void CharacterStartRunning();
+
+	void CharacterStopRunning();
+
+	void ToggleCrouch();
 
 
 	//
@@ -45,6 +49,7 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	class UCameraComponent* FollowCamera; 
+
 
 
 };

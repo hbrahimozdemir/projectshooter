@@ -19,6 +19,11 @@ AWeapon::AWeapon()
 
 }
 
+void AWeapon::PullTrigger()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Pulled Trigger!!!"));
+}
+
 // Called when the game starts or when spawned
 void AWeapon::BeginPlay()
 {

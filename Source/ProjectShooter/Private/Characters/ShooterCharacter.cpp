@@ -66,6 +66,8 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
     // Bind crouch toggle action
     PlayerInputComponent->BindAction(TEXT("Crouch"), EInputEvent::IE_Pressed, this, &AShooterCharacter::ToggleCrouch);
+    //bind 
+    PlayerInputComponent->BindAction(TEXT("Shoot"), EInputEvent::IE_Pressed, this, &AShooterCharacter::Shoot);
 }
 
 // Movement functions
@@ -112,4 +114,10 @@ void AShooterCharacter::ToggleCrouch()
         Crouch();
        
     }
+}
+
+void AShooterCharacter::Shoot()
+{
+    Weapon->PullTrigger();
+
 }

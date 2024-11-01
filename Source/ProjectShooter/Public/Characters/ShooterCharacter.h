@@ -42,6 +42,9 @@ private:
 	void CharacterStopRunning();
 
 	void ToggleCrouch();
+	
+	void Shoot();
+
 
 
 	//

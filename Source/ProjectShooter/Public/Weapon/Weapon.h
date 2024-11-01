@@ -14,6 +14,9 @@ class PROJECTSHOOTER_API AWeapon : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AWeapon();
+
+	void PullTrigger();
+
 	virtual void Tick(float DeltaTime) override;
 protected:
 	

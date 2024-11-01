@@ -38,6 +38,10 @@ void AShooterCharacter::BeginPlay()
     Super::BeginPlay();
 
     Weapon = GetWorld()->SpawnActor<AWeapon>(WeaponClass);
+    Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
+    Weapon->SetOwner(this);
+
+
 }
 
 // Called every frame

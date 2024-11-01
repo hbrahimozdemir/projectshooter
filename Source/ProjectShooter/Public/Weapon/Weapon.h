@@ -30,5 +30,6 @@ private:
 	UPROPERTY(VisibleAnywhere, Category= "Weapon Properties")
 	class USceneComponent* WeaponRoot;
 
-
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* MuzzleFlash;
 };

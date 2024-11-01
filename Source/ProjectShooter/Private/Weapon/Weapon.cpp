@@ -2,6 +2,8 @@
 
 
 #include "Weapon/Weapon.h"
+#include "Kismet/GameplayStatics.h"
+
 
 // Sets default values
 AWeapon::AWeapon()
@@ -21,7 +23,7 @@ AWeapon::AWeapon()
 
 void AWeapon::PullTrigger()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Pulled Trigger!!!"));
+	UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, WeaponMesh, TEXT("Muzzle"));
 }
 
 // Called when the game starts or when spawned

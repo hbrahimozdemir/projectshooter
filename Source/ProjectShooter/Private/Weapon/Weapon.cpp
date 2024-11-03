@@ -51,8 +51,8 @@ void AWeapon::PullTrigger()
 		AActor* HitActor = Hit.GetActor();
 		if (HitActor != nullptr)
 		{
-			FPointDamageEvent DamageEvent(DamageAmount, Hit, ShotDirection, nullptr);
-			HitActor->TakeDamage(DamageAmount, DamageEvent, OwnerController, this);
+			FPointDamageEvent DamageEvent(WeaponDamage, Hit, ShotDirection, nullptr);
+			HitActor->TakeDamage(WeaponDamage, DamageEvent, OwnerController, this);
 		}
 	}
 }

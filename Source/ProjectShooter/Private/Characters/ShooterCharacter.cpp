@@ -37,10 +37,12 @@ void AShooterCharacter::BeginPlay()
 {
     Super::BeginPlay();
 
+    CurrentHealth = MaxHealth;
     Weapon = GetWorld()->SpawnActor<AWeapon>(WeaponClass);
     Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
     Weapon->SetOwner(this);
 
+    
 
 }
 
@@ -68,6 +70,15 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
     PlayerInputComponent->BindAction(TEXT("Crouch"), EInputEvent::IE_Pressed, this, &AShooterCharacter::ToggleCrouch);
     //bind 
     PlayerInputComponent->BindAction(TEXT("Shoot"), EInputEvent::IE_Pressed, this, &AShooterCharacter::Shoot);
+}
+
+float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+    float DamageToApply = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+    DamageToApply = FMath::Min(CurrentHealth, DamageToApply);
+    CurrentHealth -= DamageToApply;
+    UE_LOG(LogTemp, Warning, TEXT("Health Left %f"), CurrentHealth);
+    return DamageToApply;
 }
 
 

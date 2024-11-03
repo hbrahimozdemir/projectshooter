@@ -38,5 +38,5 @@ private:
 	float BulletRange=1000;
 
 	UPROPERTY(EditAnywhere)
-	float DamageAmount = 20;
+	float WeaponDamage = 20;
 };

@@ -4,6 +4,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Weapon/Weapon.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -14,16 +15,16 @@ AShooterCharacter::AShooterCharacter()
     CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
     CameraBoom->SetupAttachment(GetMesh());
     CameraBoom->bUsePawnControlRotation = true;
-    CameraBoom->TargetArmLength = 210;
+    CameraBoom->TargetArmLength = 300;
 
     FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
     FollowCamera->SetupAttachment(CameraBoom);
     FollowCamera->bUsePawnControlRotation = false;
 
-    // Character movement settings
-    bUseControllerRotationYaw = false;
-    GetCharacterMovement()->bOrientRotationToMovement = true;
-
+    //// Character movement settings
+    //bUseControllerRotationYaw = false;
+    //GetCharacterMovement()->bOrientRotationToMovement = true;
+    CurrentHealth = MaxHealth;
     // Enable crouch capability
     if (GetMovementComponent())
     {
@@ -35,6 +36,15 @@ AShooterCharacter::AShooterCharacter()
 void AShooterCharacter::BeginPlay()
 {
     Super::BeginPlay();
+
+    CurrentHealth = MaxHealth;
+
+    Weapon = GetWorld()->SpawnActor<AWeapon>(WeaponClass);
+    Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
+    Weapon->SetOwner(this);
+
+    
+
 }
 
 // Called every frame
@@ -52,7 +62,6 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
     PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &AShooterCharacter::MoveRight);
     PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &APawn::AddControllerPitchInput);
     PlayerInputComponent->BindAxis(TEXT("LookRight"), this, &APawn::AddControllerYawInput);
-    PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &ACharacter::Jump);
 
     // Bind sprint actions
     PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Pressed, this, &AShooterCharacter::CharacterStartRunning);
@@ -60,37 +69,52 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
     // Bind crouch toggle action
     PlayerInputComponent->BindAction(TEXT("Crouch"), EInputEvent::IE_Pressed, this, &AShooterCharacter::ToggleCrouch);
+    //bind 
+    PlayerInputComponent->BindAction(TEXT("Shoot"), EInputEvent::IE_Pressed, this, &AShooterCharacter::Shoot);
 }
 
-// Movement functions
-void AShooterCharacter::Move(const float AxisValue, const EAxis::Type Axis)
+float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-    if (Controller && AxisValue != 0.f)
-    {
-        const FRotator YawRotation(0.f, Controller->GetControlRotation().Yaw, 0.f);
-        const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(Axis);
-        AddMovementInput(Direction, AxisValue);
-    }
+    float DamageToApply = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+    DamageToApply = FMath::Min(CurrentHealth, DamageToApply);
+    CurrentHealth -= DamageToApply;
+    UE_LOG(LogTemp, Warning, TEXT("Health Left %f"), CurrentHealth);
+
+    return DamageToApply;
+}
+
+bool AShooterCharacter::IsDead() const
+{
+    return CurrentHealth <= 0;
 }
 
 void AShooterCharacter::MoveForward(float AxisValue)
 {
-    Move(AxisValue, EAxis::X);
+    AddMovementInput(GetActorForwardVector() * AxisValue);
 }
 
 void AShooterCharacter::MoveRight(float AxisValue)
 {
-    Move(AxisValue, EAxis::Y);
+    AddMovementInput(GetActorRightVector() * AxisValue);
 }
+
 
 // Sprint functions
 void AShooterCharacter::CharacterStartRunning()
 {
-    GetCharacterMovement()->MaxWalkSpeed = 700.f;
+    // Karakterin ileri yönde hareket edip etmediðini kontrol et
+    float ForwardAxisValue = GetInputAxisValue(TEXT("MoveForward"));
+
+    // Yalnýzca ileri giderken koþmayý etkinleþtir
+    if (ForwardAxisValue > 0)
+    {
+        GetCharacterMovement()->MaxWalkSpeed = 700.f;
+    }
 }
 
 void AShooterCharacter::CharacterStopRunning()
 {
+    // Koþmayý durdur ve normal hýza dön
     GetCharacterMovement()->MaxWalkSpeed = 600.f;
 }
 
@@ -106,4 +130,10 @@ void AShooterCharacter::ToggleCrouch()
         Crouch();
        
     }
+}
+
+void AShooterCharacter::Shoot()
+{
+    Weapon->PullTrigger();
+
 }

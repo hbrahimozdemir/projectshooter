@@ -22,7 +22,7 @@ void UShooterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 	}
 
 	if (ShooterCharacter == nullptr) return;
-
+	bIsDead = ShooterCharacter->IsDead();
 	FVector Velocity = ShooterCharacter->GetVelocity();
 	Velocity.Z = 0.f;
 	Speed = Velocity.Size();

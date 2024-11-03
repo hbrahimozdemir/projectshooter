@@ -24,7 +24,7 @@ AShooterCharacter::AShooterCharacter()
     //// Character movement settings
     //bUseControllerRotationYaw = false;
     //GetCharacterMovement()->bOrientRotationToMovement = true;
-
+    CurrentHealth = MaxHealth;
     // Enable crouch capability
     if (GetMovementComponent())
     {
@@ -38,6 +38,7 @@ void AShooterCharacter::BeginPlay()
     Super::BeginPlay();
 
     CurrentHealth = MaxHealth;
+
     Weapon = GetWorld()->SpawnActor<AWeapon>(WeaponClass);
     Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
     Weapon->SetOwner(this);
@@ -78,9 +79,14 @@ float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dama
     DamageToApply = FMath::Min(CurrentHealth, DamageToApply);
     CurrentHealth -= DamageToApply;
     UE_LOG(LogTemp, Warning, TEXT("Health Left %f"), CurrentHealth);
+
     return DamageToApply;
 }
 
+bool AShooterCharacter::IsDead() const
+{
+    return CurrentHealth <= 0;
+}
 
 void AShooterCharacter::MoveForward(float AxisValue)
 {

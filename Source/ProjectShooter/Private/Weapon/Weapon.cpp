@@ -41,11 +41,14 @@ void AWeapon::PullTrigger()
 	
 
 	FHitResult Hit;
-	bool bSuccess=GetWorld()->LineTraceSingleByChannel(Hit, Location, TraceEnd, ECollisionChannel::ECC_GameTraceChannel1);
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
+	Params.AddIgnoredActor(GetOwner());
+	bool bSuccess=GetWorld()->LineTraceSingleByChannel(Hit, Location, TraceEnd, ECollisionChannel::ECC_GameTraceChannel1,Params);
 	if (bSuccess)
 	{
 		FVector ShotDirection = -Rotation.Vector();
-		DrawDebugPoint(GetWorld(), Hit.Location, 20, FColor::Red, true);
+		
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),ImpactEffect , Hit.Location, ShotDirection.Rotation());
 		
 		AActor* HitActor = Hit.GetActor();

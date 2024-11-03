@@ -3,6 +3,7 @@
 #include "Characters/ShooterCharacter.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Weapon/Weapon.h"
 
@@ -79,6 +80,11 @@ float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dama
     DamageToApply = FMath::Min(CurrentHealth, DamageToApply);
     CurrentHealth -= DamageToApply;
     UE_LOG(LogTemp, Warning, TEXT("Health Left %f"), CurrentHealth);
+    if (IsDead())
+    {
+        DetachFromControllerPendingDestroy();
+        GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    }
 
     return DamageToApply;
 }

@@ -15,15 +15,15 @@ AShooterCharacter::AShooterCharacter()
     CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
     CameraBoom->SetupAttachment(GetMesh());
     CameraBoom->bUsePawnControlRotation = true;
-    CameraBoom->TargetArmLength = 210;
+    CameraBoom->TargetArmLength = 300;
 
     FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
     FollowCamera->SetupAttachment(CameraBoom);
     FollowCamera->bUsePawnControlRotation = false;
 
-    // Character movement settings
-    bUseControllerRotationYaw = false;
-    GetCharacterMovement()->bOrientRotationToMovement = true;
+    //// Character movement settings
+    //bUseControllerRotationYaw = false;
+    //GetCharacterMovement()->bOrientRotationToMovement = true;
 
     // Enable crouch capability
     if (GetMovementComponent())
@@ -70,35 +70,34 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
     PlayerInputComponent->BindAction(TEXT("Shoot"), EInputEvent::IE_Pressed, this, &AShooterCharacter::Shoot);
 }
 
-// Movement functions
-void AShooterCharacter::Move(const float AxisValue, const EAxis::Type Axis)
-{
-    if (Controller && AxisValue != 0.f)
-    {
-        const FRotator YawRotation(0.f, Controller->GetControlRotation().Yaw, 0.f);
-        const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(Axis);
-        AddMovementInput(Direction, AxisValue);
-    }
-}
 
 void AShooterCharacter::MoveForward(float AxisValue)
 {
-    Move(AxisValue, EAxis::X);
+    AddMovementInput(GetActorForwardVector() * AxisValue);
 }
 
 void AShooterCharacter::MoveRight(float AxisValue)
 {
-    Move(AxisValue, EAxis::Y);
+    AddMovementInput(GetActorRightVector() * AxisValue);
 }
+
 
 // Sprint functions
 void AShooterCharacter::CharacterStartRunning()
 {
-    GetCharacterMovement()->MaxWalkSpeed = 700.f;
+    // Karakterin ileri yönde hareket edip etmediðini kontrol et
+    float ForwardAxisValue = GetInputAxisValue(TEXT("MoveForward"));
+
+    // Yalnýzca ileri giderken koþmayý etkinleþtir
+    if (ForwardAxisValue > 0)
+    {
+        GetCharacterMovement()->MaxWalkSpeed = 700.f;
+    }
 }
 
 void AShooterCharacter::CharacterStopRunning()
 {
+    // Koþmayý durdur ve normal hýza dön
     GetCharacterMovement()->MaxWalkSpeed = 600.f;
 }
 

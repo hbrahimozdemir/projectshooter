@@ -33,5 +33,5 @@ void UShooterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 
 	bIsCrouching = ShooterCharacter->GetCharacterMovement()->IsCrouching();
 
-
+	Direction = CalculateDirection(Velocity, ShooterCharacter->GetActorRotation());
 }

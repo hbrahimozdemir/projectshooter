@@ -4,6 +4,8 @@
 #include "ShooterAnimInstance.h"
 #include "Characters/ShooterCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/Controller.h"
+#include <Kismet/KismetMathLibrary.h>
 
 void UShooterAnimInstance::NativeInitializeAnimation()
 {
@@ -33,5 +35,14 @@ void UShooterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 
 	bIsCrouching = ShooterCharacter->GetCharacterMovement()->IsCrouching();
 
+	FRotator AimRotation = ShooterCharacter->GetBaseAimRotation(); // Kameranýn aim rotasyonu
+	FRotator MovementRotation = ShooterCharacter->GetActorRotation(); // Karakterin hareket rotasyonu
+
+	FRotator DeltaRot = UKismetMathLibrary::NormalizedDeltaRotator(AimRotation, MovementRotation);
+	Yaw = DeltaRot.Yaw;
+	Pitch = DeltaRot.Pitch;
+
 	Direction = CalculateDirection(Velocity, ShooterCharacter->GetActorRotation());
+
+
 }

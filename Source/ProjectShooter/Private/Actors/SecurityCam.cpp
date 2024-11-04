@@ -3,6 +3,7 @@
 
 #include "Actors/SecurityCam.h"
 #include "Characters/ShooterCharacter.h"
+#include "AISystem/ShooterPawnSensingComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 
@@ -13,67 +14,62 @@ ASecurityCam::ASecurityCam()
 	PrimaryActorTick.bCanEverTick = true;
 	CamMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SecurityCamera"));
 	RootComponent = CamMesh;
-}
 
+	// ShooterPawnSensingComponent kullanarak algýlama
+	PawnSensingComp = CreateDefaultSubobject<UShooterPawnSensingComponent>(TEXT("PawnSensingComp"));
+}
 void ASecurityCam::BeginPlay()
 {
-	Super::BeginPlay();
-	// Reference to player
-	PlayerActor = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+    Super::BeginPlay();
+
+    PlayerActor = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+
+    if (PawnSensingComp)
+    {
+        PawnSensingComp->OnSeePawn.AddDynamic(this, &ASecurityCam::OnPlayerDetected);
+        PawnSensingComp->OnHearNoise.AddDynamic(this, &ASecurityCam::OnNoiseHeard);
+    }
 }
 
-// Called every frame
 void ASecurityCam::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
+    Super::Tick(DeltaTime);
 
-	// Check if player is in line of sight
-	CheckVisualDetection();
+    if (bPlayerDetected)
+    {
+        DetectionTime += DeltaTime;
 
-	// If player is visible, increase detection time
-	if (bIsPlayerVisible)
-	{
-		DetectionTime += DeltaTime;
-
-		// Trigger the alarm if the detection time exceeds the threshold
-		if (DetectionTime >= AlarmThreshold)
-		{
-			TriggerAlarm();
-		}
-	}
-	else
-	{
-		// Reset detection time if player is not visible
-		DetectionTime = 0.0f;
-	}
+        if (DetectionTime >= 3.0f)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Alarm Triggered! Player detected for 3 seconds."));
+            TriggerAlarm();
+            bPlayerDetected = false;
+        }
+    }
+    else
+    {
+        DetectionTime = 0.0f;
+    }
 }
 
-// Check if player is within line of sight
-void ASecurityCam::CheckVisualDetection()
+void ASecurityCam::OnPlayerDetected(APawn* Pawn)
 {
-	if (!PlayerActor) return;
+    if (Pawn == PlayerActor)
+    {
+        bPlayerDetected = true;
+    }
+}
 
-	// Perform a line trace from the camera to the player
-	FHitResult HitResult;
-	FVector StartLocation = GetActorLocation();
-	FVector EndLocation = PlayerActor->GetActorLocation();
-
-	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(this); // Ignore the camera itself
-
-	// Perform the line trace
-	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility, Params);
-
-	// Set bIsPlayerVisible based on whether the line trace hit the player
-	bIsPlayerVisible = bHit && HitResult.GetActor() == PlayerActor;
+void ASecurityCam::OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, float Volume)
+{
+    if (NoiseInstigator == PlayerActor)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Noise heard from player at location: %s"), *Location.ToString());
+        // Ýsteðe baðlý olarak alarmý tetikleyebilirsiniz
+    }
 }
 
 void ASecurityCam::TriggerAlarm()
 {
-	// Log a message to the output log for testing
-	UE_LOG(LogTemp, Warning, TEXT("Alarm Triggered by Security Camera!"));
-
-	// Reset the detection time after triggering the alarm
-	DetectionTime = 0.0f;
+    UE_LOG(LogTemp, Warning, TEXT("Alarm triggered by security camera!"));
 }
-

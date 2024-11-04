@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "SecurityCam.generated.h"
 
+class UPawnSensingComponent;
 UCLASS()
 class PROJECTSHOOTER_API ASecurityCam : public AActor
 {
@@ -18,29 +19,28 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UStaticMeshComponent* CamMesh;
 
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	class UShooterPawnSensingComponent* PawnSensingComp;
+
+	APawn* PlayerActor;
+	bool bPlayerDetected;
+	float DetectionTime;
+
+	UFUNCTION()
+	void OnPlayerDetected(APawn* Pawn);
+
+	UFUNCTION()
+	void OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, float Volume);
+
+	void TriggerAlarm();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	// Check for player in line of sight
-	void CheckVisualDetection();
+	
 
-	// Detection variables
-	UPROPERTY(EditAnywhere)
-	float DetectionRange = 1000.0f; // Maximum range to detect player
 
-	UPROPERTY(EditAnywhere)
-	float AlarmThreshold = 3.0f; // Time required to trigger the alarm
 
-private:
-	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* CamMesh;
-	// Player reference
-	AActor* PlayerActor;
-	// Variables to track detection
-	bool bIsPlayerVisible = false;
-	float DetectionTime = 0.0f;
-
-	// Function to trigger alarm
-	void TriggerAlarm();
 };

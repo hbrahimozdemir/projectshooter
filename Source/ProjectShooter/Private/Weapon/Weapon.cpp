@@ -25,39 +25,44 @@ AWeapon::AWeapon()
 
 void AWeapon::PullTrigger()
 {
-	UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, WeaponMesh, TEXT("Muzzle"));
+    UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, WeaponMesh, TEXT("Muzzle"));
 
-	APawn* OwnerPawn = Cast<APawn>(GetOwner());
-	if (OwnerPawn == nullptr) return;
-	AController* OwnerController = OwnerPawn->GetController();
-	if (OwnerController == nullptr)return;
-	FVector Location;
-	FRotator Rotation;
-	OwnerController->GetPlayerViewPoint(Location,Rotation);
-	
-	FVector TraceEnd = Location + Rotation.Vector() * BulletRange;
-	
+    // Play the firing sound
+    if (FireSound)  // Check if the sound asset is set
+    {
+        UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+    }
 
-	
+    APawn* OwnerPawn = Cast<APawn>(GetOwner());
+    if (OwnerPawn == nullptr) return;
+    AController* OwnerController = OwnerPawn->GetController();
+    if (OwnerController == nullptr) return;
 
-	FHitResult Hit;
-	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(this);
-	Params.AddIgnoredActor(GetOwner());
-	bool bSuccess=GetWorld()->LineTraceSingleByChannel(Hit, Location, TraceEnd, ECollisionChannel::ECC_GameTraceChannel1,Params);
-	if (bSuccess)
-	{
-		FVector ShotDirection = -Rotation.Vector();
-		
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),ImpactEffect , Hit.Location, ShotDirection.Rotation());
-		
-		AActor* HitActor = Hit.GetActor();
-		if (HitActor != nullptr)
-		{
-			FPointDamageEvent DamageEvent(WeaponDamage, Hit, ShotDirection, nullptr);
-			HitActor->TakeDamage(WeaponDamage, DamageEvent, OwnerController, this);
-		}
-	}
+    FVector Location;
+    FRotator Rotation;
+    OwnerController->GetPlayerViewPoint(Location, Rotation);
+
+    FVector TraceEnd = Location + Rotation.Vector() * BulletRange;
+
+    FHitResult Hit;
+    FCollisionQueryParams Params;
+    Params.AddIgnoredActor(this);
+    Params.AddIgnoredActor(GetOwner());
+    bool bSuccess = GetWorld()->LineTraceSingleByChannel(Hit, Location, TraceEnd, ECollisionChannel::ECC_GameTraceChannel1, Params);
+
+    if (bSuccess)
+    {
+        FVector ShotDirection = -Rotation.Vector();
+
+        UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffect, Hit.Location, ShotDirection.Rotation());
+
+        AActor* HitActor = Hit.GetActor();
+        if (HitActor != nullptr)
+        {
+            FPointDamageEvent DamageEvent(WeaponDamage, Hit, ShotDirection, nullptr);
+            HitActor->TakeDamage(WeaponDamage, DamageEvent, OwnerController, this);
+        }
+    }
 }
 
 // Called when the game starts or when spawned

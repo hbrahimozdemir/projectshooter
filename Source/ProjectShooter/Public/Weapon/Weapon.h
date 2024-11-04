@@ -34,6 +34,9 @@ private:
 	UParticleSystem* MuzzleFlash;
 	UPROPERTY(EditAnywhere)
 	UParticleSystem* ImpactEffect;
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	USoundBase* FireSound;  // Add this line
+
 	UPROPERTY(EditAnywhere)
 	float BulletRange=1000;
 

@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/WidgetComponent.h"
+#include "Components/BoxComponent.h"
+#include "Characters/ShooterCharacter.h"
 #include "BaseItem.generated.h"
 
 class UBoxComponent;

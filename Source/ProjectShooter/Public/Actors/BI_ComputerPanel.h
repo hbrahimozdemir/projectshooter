@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Actors/BaseItem.h"
-#include "Components/PointLightComponent.h"
 #include "BI_ComputerPanel.generated.h"
 
 /**
@@ -19,7 +18,7 @@ public:
 	ABI_ComputerPanel();
 
 	UPROPERTY(VisibleAnywhere,Category="Lights")
-	UPointLightComponent* PointLight;
+	class UPointLightComponent* PointLight;
 
 	virtual void Interact(ACharacter* Character);
 

@@ -4,13 +4,28 @@
 #include <Perception/PawnSensingComponent.h>
 #include <AISystem/ShooterAIController.h>
 #include "BehaviorTree/BlackboardComponent.h" 
+#include <Components/SpotLightComponent.h>
 
 ASecurityCam::ASecurityCam()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	ItemRoot = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	RootComponent = ItemRoot;
+
+	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Item Mesh"));
+	ItemMesh->SetupAttachment(ItemRoot);
+
 	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComponent"));
 	PawnSensingComponent->OnSeePawn.AddDynamic(this, &ASecurityCam::OnSeePlayer);
+
+	// SpotLight oluşturuyoruz
+	SpotLight = CreateDefaultSubobject<USpotLightComponent>(TEXT("SpotLight"));
+	SpotLight->SetupAttachment(ItemRoot); // Root bileşenine ekliyoruz
+	SpotLight->SetVisibility(true);
+
+
+
 }
 
 void ASecurityCam::BeginPlay()

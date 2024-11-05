@@ -18,13 +18,20 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	USceneComponent* ItemRoot;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UStaticMeshComponent* ItemMesh;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	void SetCanSeePlayers(bool bCanSee);
 	bool bSeePlayer = true;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class USpotLightComponent* SpotLight;
 
 private:
 	// Oyuncu görüþ alanýna girince çaðrýlacak fonksiyon

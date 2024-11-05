@@ -24,7 +24,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void SetCanSeePlayers(bool bCanSee);
-
+	bool bSeePlayer = true;
 
 private:
 	// Oyuncu görüþ alanýna girince çaðrýlacak fonksiyon

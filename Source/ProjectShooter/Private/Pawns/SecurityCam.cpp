@@ -1,6 +1,6 @@
-#include "Pawns/SecurityCam.h"
+ï»¿#include "Pawns/SecurityCam.h"
 #include "Kismet/GameplayStatics.h"
-#include "aisystem/ShooterAIController.h" // AI controller'ýnýzý burada dahil edin
+#include "aisystem/ShooterAIController.h" // AI controller'ï¿½nï¿½zï¿½ burada dahil edin
 #include <Perception/PawnSensingComponent.h>
 #include <AISystem/ShooterAIController.h>
 #include "BehaviorTree/BlackboardComponent.h" 
@@ -25,15 +25,18 @@ void ASecurityCam::Tick(float DeltaTime)
 
 void ASecurityCam::SetCanSeePlayers(bool bCanSee)
 {
-	bCanSeePlayers = bCanSee;
+	bSeePlayer = bCanSee;
 }
 
 void ASecurityCam::OnSeePlayer(APawn* SeenPawn)
 {
-	if (!bCanSeePlayers) UE_LOG(LogTemp, Warning, TEXT("ALARM DISABLED ")); return;
-	if (SeenPawn->IsPlayerControlled() && !bAlarmActive && !GetWorldTimerManager().IsTimerActive(AlarmTimer))
+	if (bSeePlayer == false) {
+		UE_LOG(LogTemp, Warning, TEXT("ALARM Disabled"));
+	}
+	
+	if (SeenPawn->IsPlayerControlled() && !bAlarmActive && !GetWorldTimerManager().IsTimerActive(AlarmTimer) && bSeePlayer==true)
 	{
-		// 3 saniye sonra alarmý baþlatmak için timer ayarla
+		// 3 saniye sonra alarmï¿½ baï¿½latmak iï¿½in timer ayarla
 		GetWorldTimerManager().SetTimer(AlarmTimer, this, &ASecurityCam::ActivateAlarm, 3.0f, false);
 	}
 }
@@ -42,11 +45,11 @@ void ASecurityCam::ActivateAlarm()
 {
 	bAlarmActive = true;
 	UE_LOG(LogTemp, Warning, TEXT("ALARM!! , ALARM!! Das ist ein Feind "));
-	// Oyuncunun dünyadaki konumunu al
+	// Oyuncunun dï¿½nyadaki konumunu al
 	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	if (PlayerPawn == nullptr)
 	{
-		return;  // Eðer oyuncu bulunamazsa fonksiyondan çýk
+		return;  // Eï¿½er oyuncu bulunamazsa fonksiyondan ï¿½ï¿½k
 	}
 
 	// AI'lara alarm durumunu bildir

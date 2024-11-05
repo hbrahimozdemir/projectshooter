@@ -37,10 +37,15 @@ public:
 	void Shoot();
 
 	void Interact();
-	
+
+	UFUNCTION(BlueprintPure, Category = "Player Interaction")
+	bool GetIsPlayerGetDocument() const;
 
 	UPROPERTY()
 	class ABaseItem* CurrentInteractableItem;
+
+	UPROPERTY(VisibleAnywhere)
+	bool isPlayerGetDocument;
 private:
 	
 
@@ -71,6 +76,7 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	float CurrentHealth;
 
+	
 	
 
 	UPROPERTY(EditDefaultsOnly)

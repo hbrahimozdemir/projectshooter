@@ -11,13 +11,14 @@ ABI_SecretDocument::ABI_SecretDocument()
 
 void ABI_SecretDocument::Interact(ACharacter* Character)
 {
+    // Karakteri ShooterCharacter olarak cast et ve isPlayerGetDocument deðerini true yap
+    AShooterCharacter* ShooterCharacter = Cast<AShooterCharacter>(Character);
+    if (ShooterCharacter)
+    {
+        ShooterCharacter->isPlayerGetDocument = true;
+    }
 
-
-
-
-	ItemMesh->DestroyComponent();
-
-	InteractionBox->DestroyComponent();
-
-	
+    // Belgeyi yok et
+    ItemMesh->DestroyComponent();
+    InteractionBox->DestroyComponent();
 }

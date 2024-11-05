@@ -153,3 +153,9 @@ void AShooterCharacter::Interact()
         CurrentInteractableItem->Interact(this); // Call Interact on the current item
     }
 }
+
+bool AShooterCharacter::GetIsPlayerGetDocument() const
+{
+    return isPlayerGetDocument;
+}
+

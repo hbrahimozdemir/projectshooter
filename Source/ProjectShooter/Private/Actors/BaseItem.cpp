@@ -3,7 +3,6 @@
 
 #include "Actors/BaseItem.h"
 #include "Components/BoxComponent.h"
-#include "Components/WidgetComponent.h"
 #include "Characters/ShooterCharacter.h"
 // Sets default values
 ABaseItem::ABaseItem()
@@ -75,5 +74,6 @@ void ABaseItem::Interact(ACharacter* Character)
 {
 	// Define what happens when the player interacts with the item
 	UE_LOG(LogTemp, Warning, TEXT("Interacted with BaseItem!"));
+	InteractionWidget->SetVisibility(false);
 	// Add your interaction logic here (e.g., pick up item, open menu, etc.)
 }

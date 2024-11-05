@@ -5,6 +5,7 @@
 #include <Pawns/SecurityCam.h>
 #include <Kismet/GameplayStatics.h>
 
+
 ABI_ComputerPanel::ABI_ComputerPanel()
 {
     PointLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("PointLight"));
@@ -19,7 +20,7 @@ void ABI_ComputerPanel::Interact(ACharacter* Character)
     // Change the light color to red when the player interacts
     PointLight->SetLightColor(FColor::Red);
    
- 
+    InteractionWidget->SetVisibility(false);
     // Oyuncu etkileþime girdiðinde, güvenlik kameralarýný devre dýþý býrak
     TArray<AActor*> FoundCams;
     UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASecurityCam::StaticClass(), FoundCams);

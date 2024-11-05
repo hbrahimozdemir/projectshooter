@@ -35,6 +35,9 @@ public:
 
 
 	void Shoot();
+	void Interact();
+	UPROPERTY()
+	class ABaseItem* CurrentInteractableItem;
 private:
 	
 
@@ -64,6 +67,8 @@ private:
 	float MaxHealth = 100;
 	UPROPERTY(VisibleAnywhere)
 	float CurrentHealth;
+
+	
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AWeapon> WeaponClass;

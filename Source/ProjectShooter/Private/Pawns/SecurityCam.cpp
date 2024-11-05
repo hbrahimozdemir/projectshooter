@@ -25,9 +25,10 @@ void ASecurityCam::Tick(float DeltaTime)
 
 void ASecurityCam::OnSeePlayer(APawn* SeenPawn)
 {
-	if (SeenPawn->IsPlayerControlled() && !bAlarmActive)
+	if (SeenPawn->IsPlayerControlled() && !bAlarmActive && !GetWorldTimerManager().IsTimerActive(AlarmTimer))
 	{
-		GetWorldTimerManager().SetTimer(AlarmTimer, this, &ASecurityCam::ActivateAlarm, 0.1f, false);
+		// 3 saniye sonra alarmý baþlatmak için timer ayarla
+		GetWorldTimerManager().SetTimer(AlarmTimer, this, &ASecurityCam::ActivateAlarm, 3.0f, false);
 	}
 }
 

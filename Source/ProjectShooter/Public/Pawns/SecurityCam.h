@@ -23,6 +23,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* ItemMesh;
+
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	USoundBase* AlarmSound;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

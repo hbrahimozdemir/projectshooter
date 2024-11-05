@@ -6,6 +6,7 @@
 #include "BehaviorTree/BlackboardComponent.h" 
 #include <Components/SpotLightComponent.h>
 
+
 ASecurityCam::ASecurityCam()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -60,6 +61,13 @@ void ASecurityCam::ActivateAlarm()
 {
 	bAlarmActive = true;
 	UE_LOG(LogTemp, Warning, TEXT("ALARM!! , ALARM!! Das ist ein Feind "));
+
+	// Play the Alarm Sound
+	if (AlarmSound)  // Check if the sound asset is set
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, AlarmSound, GetActorLocation());
+	}
+
 	// Oyuncunun d�nyadaki konumunu al
 	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	if (PlayerPawn == nullptr)

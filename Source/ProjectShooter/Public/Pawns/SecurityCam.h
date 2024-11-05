@@ -23,6 +23,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void SetCanSeePlayers(bool bCanSee);
+
 
 private:
 	// Oyuncu görüþ alanýna girince çaðrýlacak fonksiyon
@@ -38,6 +40,8 @@ private:
 
 	// Alarm durumu
 	bool bAlarmActive = false;
+
+	bool bCanSeePlayers = true;
 
 	// Alarmý tetiklemek için zamanlayýcý
 	FTimerHandle AlarmTimer;

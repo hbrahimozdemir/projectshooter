@@ -23,8 +23,14 @@ void ASecurityCam::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void ASecurityCam::SetCanSeePlayers(bool bCanSee)
+{
+	bCanSeePlayers = bCanSee;
+}
+
 void ASecurityCam::OnSeePlayer(APawn* SeenPawn)
 {
+	if (!bCanSeePlayers) UE_LOG(LogTemp, Warning, TEXT("ALARM DISABLED ")); return;
 	if (SeenPawn->IsPlayerControlled() && !bAlarmActive && !GetWorldTimerManager().IsTimerActive(AlarmTimer))
 	{
 		// 3 saniye sonra alarmý baþlatmak için timer ayarla

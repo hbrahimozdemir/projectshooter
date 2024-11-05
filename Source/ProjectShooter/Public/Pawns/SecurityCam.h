@@ -44,6 +44,8 @@ private:
 	// Alarmý aktif hale getiren fonksiyon
 	void ActivateAlarm();
 
+	void DeactivateAlarm();
+
 	// Pawn Sensing Component (oyuncuyu algýlamak için kullanýlýr)
 	UPROPERTY(VisibleAnywhere)
 	class UPawnSensingComponent* PawnSensingComponent;

@@ -59,32 +59,40 @@ void ASecurityCam::OnSeePlayer(APawn* SeenPawn)
 
 void ASecurityCam::ActivateAlarm()
 {
-	bAlarmActive = true;
-	UE_LOG(LogTemp, Warning, TEXT("ALARM!! , ALARM!! Das ist ein Feind "));
+    bAlarmActive = true;
+    UE_LOG(LogTemp, Warning, TEXT("ALARM!! , ALARM!! Das ist ein Feind "));
 
-	// Play the Alarm Sound
-	if (AlarmSound)  // Check if the sound asset is set
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, AlarmSound, GetActorLocation());
-	}
+    // Alarm sesini çal
+    if (AlarmSound)
+    {
+        UGameplayStatics::PlaySoundAtLocation(this, AlarmSound, GetActorLocation());
+    }
 
-	// Oyuncunun d�nyadaki konumunu al
-	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
-	if (PlayerPawn == nullptr)
-	{
-		return;  // E�er oyuncu bulunamazsa fonksiyondan ��k
-	}
+    // Oyuncunun dünyadaki konumunu al
+    APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+    if (PlayerPawn == nullptr)
+    {
+        return;
+    }
 
-	// AI'lara alarm durumunu bildir
-	TArray<AActor*> FoundAI;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AShooterAIController::StaticClass(), FoundAI);
-	for (AActor* AIActor : FoundAI)
-	{
-		AShooterAIController* AIController = Cast<AShooterAIController>(AIActor);
-		if (AIController && AIController->GetBlackboardComponent())
-		{
-			AIController->GetBlackboardComponent()->SetValueAsBool(TEXT("IsAlarmActive"), true);
-			AIController->GetBlackboardComponent()->SetValueAsVector(TEXT("LastKnownPlayerLocation"), PlayerPawn->GetActorLocation());
-		}
-	}
+    // AI'lara alarm durumunu bildir
+    TArray<AActor*> FoundAI;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AShooterAIController::StaticClass(), FoundAI);
+    for (AActor* AIActor : FoundAI)
+    {
+        AShooterAIController* AIController = Cast<AShooterAIController>(AIActor);
+        if (AIController && AIController->GetBlackboardComponent())
+        {
+            AIController->GetBlackboardComponent()->SetValueAsBool(TEXT("IsAlarmActive"), true);
+            AIController->GetBlackboardComponent()->SetValueAsVector(TEXT("LastKnownPlayerLocation"), PlayerPawn->GetActorLocation());
+        }
+    }
+
+    // Alarmı 5 saniye sonra kapatmak için bir zamanlayıcı ayarla
+    GetWorldTimerManager().SetTimer(AlarmTimer, this, &ASecurityCam::DeactivateAlarm, 5.0f, false);
+}
+void ASecurityCam::DeactivateAlarm()
+{
+    bAlarmActive = false;
+    UE_LOG(LogTemp, Warning, TEXT("Alarm deactivated"));
 }

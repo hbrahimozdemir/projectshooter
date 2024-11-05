@@ -35,7 +35,10 @@ public:
 
 
 	void Shoot();
+
 	void Interact();
+	
+
 	UPROPERTY()
 	class ABaseItem* CurrentInteractableItem;
 private:

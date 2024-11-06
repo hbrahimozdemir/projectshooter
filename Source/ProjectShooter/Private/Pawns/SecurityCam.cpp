@@ -1,16 +1,32 @@
-#include "Pawns/SecurityCam.h"
+ï»¿#include "Pawns/SecurityCam.h"
 #include "Kismet/GameplayStatics.h"
-#include "aisystem/ShooterAIController.h" // AI controller'ýnýzý burada dahil edin
+#include "aisystem/ShooterAIController.h" // AI controller'ï¿½nï¿½zï¿½ burada dahil edin
 #include <Perception/PawnSensingComponent.h>
 #include <AISystem/ShooterAIController.h>
 #include "BehaviorTree/BlackboardComponent.h" 
+#include <Components/SpotLightComponent.h>
+
 
 ASecurityCam::ASecurityCam()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	ItemRoot = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	RootComponent = ItemRoot;
+
+	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Item Mesh"));
+	ItemMesh->SetupAttachment(ItemRoot);
+
 	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComponent"));
 	PawnSensingComponent->OnSeePawn.AddDynamic(this, &ASecurityCam::OnSeePlayer);
+
+	// SpotLight oluÅŸturuyoruz
+	SpotLight = CreateDefaultSubobject<USpotLightComponent>(TEXT("SpotLight"));
+	SpotLight->SetupAttachment(ItemRoot); // Root bileÅŸenine ekliyoruz
+	SpotLight->SetVisibility(true);
+
+
+
 }
 
 void ASecurityCam::BeginPlay()
@@ -23,36 +39,60 @@ void ASecurityCam::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void ASecurityCam::SetCanSeePlayers(bool bCanSee)
+{
+	bSeePlayer = bCanSee;
+}
+
 void ASecurityCam::OnSeePlayer(APawn* SeenPawn)
 {
-	if (SeenPawn->IsPlayerControlled() && !bAlarmActive && !GetWorldTimerManager().IsTimerActive(AlarmTimer))
+	if (bSeePlayer == false) {
+		UE_LOG(LogTemp, Warning, TEXT("ALARM Disabled"));
+	}
+	
+	if (SeenPawn->IsPlayerControlled() && !bAlarmActive && !GetWorldTimerManager().IsTimerActive(AlarmTimer) && bSeePlayer==true)
 	{
-		// 3 saniye sonra alarmý baþlatmak için timer ayarla
+		// 3 saniye sonra alarmï¿½ baï¿½latmak iï¿½in timer ayarla
 		GetWorldTimerManager().SetTimer(AlarmTimer, this, &ASecurityCam::ActivateAlarm, 3.0f, false);
 	}
 }
 
 void ASecurityCam::ActivateAlarm()
 {
-	bAlarmActive = true;
-	UE_LOG(LogTemp, Warning, TEXT("ALARM!! , ALARM!! Das ist ein Feind "));
-	// Oyuncunun dünyadaki konumunu al
-	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
-	if (PlayerPawn == nullptr)
-	{
-		return;  // Eðer oyuncu bulunamazsa fonksiyondan çýk
-	}
+    bAlarmActive = true;
+    UE_LOG(LogTemp, Warning, TEXT("ALARM!! , ALARM!! Das ist ein Feind "));
 
-	// AI'lara alarm durumunu bildir
-	TArray<AActor*> FoundAI;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AShooterAIController::StaticClass(), FoundAI);
-	for (AActor* AIActor : FoundAI)
-	{
-		AShooterAIController* AIController = Cast<AShooterAIController>(AIActor);
-		if (AIController && AIController->GetBlackboardComponent())
-		{
-			AIController->GetBlackboardComponent()->SetValueAsBool(TEXT("IsAlarmActive"), true);
-			AIController->GetBlackboardComponent()->SetValueAsVector(TEXT("LastKnownPlayerLocation"), PlayerPawn->GetActorLocation());
-		}
-	}
+    // Alarm sesini Ã§al
+    if (AlarmSound)
+    {
+        UGameplayStatics::PlaySoundAtLocation(this, AlarmSound, GetActorLocation());
+    }
+
+    // Oyuncunun dÃ¼nyadaki konumunu al
+    APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+    if (PlayerPawn == nullptr)
+    {
+        return;
+    }
+
+    // AI'lara alarm durumunu bildir
+    TArray<AActor*> FoundAI;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AShooterAIController::StaticClass(), FoundAI);
+    for (AActor* AIActor : FoundAI)
+    {
+        AShooterAIController* AIController = Cast<AShooterAIController>(AIActor);
+        if (AIController && AIController->GetBlackboardComponent())
+        {
+            AIController->GetBlackboardComponent()->SetValueAsBool(TEXT("IsAlarmActive"), true);
+            AIController->GetBlackboardComponent()->SetValueAsVector(TEXT("LastKnownPlayerLocation"), PlayerPawn->GetActorLocation());
+        }
+    }
+
+    // AlarmÄ± 5 saniye sonra kapatmak iÃ§in bir zamanlayÄ±cÄ± ayarla
+    GetWorldTimerManager().SetTimer(AlarmTimer, this, &ASecurityCam::DeactivateAlarm, 5.0f, false);
+}
+void ASecurityCam::DeactivateAlarm()
+{
+    bAlarmActive = false;
+    UE_LOG(LogTemp, Warning, TEXT("Alarm deactivated"));
 }

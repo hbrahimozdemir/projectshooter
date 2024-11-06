@@ -6,6 +6,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Weapon/Weapon.h"
+#include "Actors/BaseItem.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -72,6 +73,8 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
     PlayerInputComponent->BindAction(TEXT("Crouch"), EInputEvent::IE_Pressed, this, &AShooterCharacter::ToggleCrouch);
     //bind 
     PlayerInputComponent->BindAction(TEXT("Shoot"), EInputEvent::IE_Pressed, this, &AShooterCharacter::Shoot);
+
+    PlayerInputComponent->BindAction(TEXT("Interact"), EInputEvent::IE_Pressed, this, &AShooterCharacter::Interact);
 }
 
 float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -143,3 +146,16 @@ void AShooterCharacter::Shoot()
     Weapon->PullTrigger();
 
 }
+void AShooterCharacter::Interact()
+{
+    if (CurrentInteractableItem)
+    {
+        CurrentInteractableItem->Interact(this); // Call Interact on the current item
+    }
+}
+
+bool AShooterCharacter::GetIsPlayerGetDocument() const
+{
+    return isPlayerGetDocument;
+}
+

@@ -35,6 +35,17 @@ public:
 
 
 	void Shoot();
+
+	void Interact();
+
+	UFUNCTION(BlueprintPure, Category = "Player Interaction")
+	bool GetIsPlayerGetDocument() const;
+
+	UPROPERTY()
+	class ABaseItem* CurrentInteractableItem;
+
+	UPROPERTY(VisibleAnywhere)
+	bool isPlayerGetDocument;
 private:
 	
 
@@ -64,6 +75,9 @@ private:
 	float MaxHealth = 100;
 	UPROPERTY(VisibleAnywhere)
 	float CurrentHealth;
+
+	
+	
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AWeapon> WeaponClass;

@@ -34,8 +34,13 @@ private:
 	TSubclassOf<class UUserWidget> CarSubWidget;
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UUserWidget> CrossHairWidget;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUserWidget> HealthBarWidget;
 
-
+	UPROPERTY(VisibleDefaultsOnly)
+	UUserWidget* CrossHair;
+	UPROPERTY(VisibleDefaultsOnly)
+	UUserWidget* HealthBar;
 
 
 

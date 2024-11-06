@@ -8,14 +8,20 @@ void AMainPlayerController::BeginPlay()
 {
     Super::BeginPlay();
 
-    UUserWidget* CrossHair = CreateWidget(this, CrossHairWidget);
+    CrossHair = CreateWidget(this, CrossHairWidget);
     if (CrossHair != nullptr) {
         CrossHair->AddToViewport();
+    } 
+    HealthBar = CreateWidget(this, HealthBarWidget);
+    if (HealthBar != nullptr) {
+        HealthBar->AddToViewport();
     }
 }
 
 void AMainPlayerController::GameHasEnded(class AActor* EndGameFocus, bool bIsWinner)
 {
+    CrossHair->RemoveFromViewport();
+    HealthBar->RemoveFromViewport();
     if (bIsWinner)
     {
         UUserWidget* CarSubtitle = CreateWidget(this, CarSubWidget);

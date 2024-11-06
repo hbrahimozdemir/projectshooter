@@ -34,6 +34,8 @@ private:
 	UParticleSystem* MuzzleFlash;
 	UPROPERTY(EditAnywhere)
 	UParticleSystem* ImpactEffect;
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* ImpactEffectBlood;
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
 	USoundBase* FireSound;  // Add this line
 

@@ -33,6 +33,9 @@ public:
 	
 	bool IsDead() const;
 
+	UFUNCTION(BlueprintPure)
+	float GetHealth() const;
+
 
 	void Shoot();
 

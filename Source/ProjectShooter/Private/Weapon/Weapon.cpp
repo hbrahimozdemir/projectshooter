@@ -22,7 +22,6 @@ AWeapon::AWeapon()
 	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 }
-
 void AWeapon::PullTrigger()
 {
     UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, WeaponMesh, TEXT("Muzzle"));
@@ -54,7 +53,17 @@ void AWeapon::PullTrigger()
     {
         FVector ShotDirection = -Rotation.Vector();
 
-        UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffect, Hit.Location, ShotDirection.Rotation());
+        // Çarpýlan nesnenin bir pawn olup olmadýðýný kontrol et
+        if (Hit.GetActor() && Hit.GetActor()->IsA<APawn>())
+        {
+            // Çarpýlan nesne bir pawn ise ImpactEffectBlood efektini kullan
+            UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffectBlood, Hit.Location, ShotDirection.Rotation());
+        }
+        else
+        {
+            // Diðer nesneler için standart ImpactEffect kullan
+            UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffect, Hit.Location, ShotDirection.Rotation());
+        }
 
         AActor* HitActor = Hit.GetActor();
         if (HitActor != nullptr)

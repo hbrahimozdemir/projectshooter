@@ -14,11 +14,11 @@ void ABI_EscapeCar::Interact(ACharacter* Character)
 
     if (PlayerCharacter->isPlayerGetDocument==true)
     {
-        UGameplayStatics::OpenLevel(this, FName("LVLCOMPLETE"));
+        UGameplayStatics::OpenLevel(this, FName("DocumentsComplete"));
 
     }
     else
     {
-        UE_LOG(LogTemp, Warning, TEXT("You need to collect the documents first!"));
+        UGameplayStatics::OpenLevel(this, FName("DocumentsNonComplete"));
     }
 }

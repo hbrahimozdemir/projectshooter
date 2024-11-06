@@ -14,9 +14,14 @@ class PROJECTSHOOTER_API AMainPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 public:
+	
 
 	virtual void GameHasEnded(class AActor* EndGameFocus = nullptr, bool bIsWinner = false) override;
+
 protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
 	UFUNCTION(BlueprintCallable)
 void RestartLevelInBlueprint();
 private:
@@ -27,6 +32,8 @@ private:
 	TSubclassOf<class UUserWidget> DeadScreenClass;
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UUserWidget> CarSubWidget;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUserWidget> CrossHairWidget;
 
 
 

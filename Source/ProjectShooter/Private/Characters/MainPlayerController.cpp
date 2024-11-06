@@ -1,10 +1,18 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
+// Fill out your copyright notice in the Description page of Project Settings
 #include "Characters/MainPlayerController.h"
 #include "TimerManager.h"
 #include "Blueprint/UserWidget.h"
 
+
+void AMainPlayerController::BeginPlay()
+{
+    Super::BeginPlay();
+
+    UUserWidget* CrossHair = CreateWidget(this, CrossHairWidget);
+    if (CrossHair != nullptr) {
+        CrossHair->AddToViewport();
+    }
+}
 
 void AMainPlayerController::GameHasEnded(class AActor* EndGameFocus, bool bIsWinner)
 {

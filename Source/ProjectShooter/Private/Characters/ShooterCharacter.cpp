@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "Weapon/Weapon.h"
 #include "Actors/BaseItem.h"
+#include "ShooterGameMode.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -85,8 +86,15 @@ float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dama
     UE_LOG(LogTemp, Warning, TEXT("Health Left %f"), CurrentHealth);
     if (IsDead())
     {
+        AShooterGameMode* GameMode = GetWorld()->GetAuthGameMode<AShooterGameMode>();
+        if (GameMode)
+        {
+            GameMode->KilledEnemy(this);
+        }
+
         DetachFromControllerPendingDestroy();
         GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
     }
 
     return DamageToApply;

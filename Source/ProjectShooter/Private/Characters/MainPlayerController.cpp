@@ -20,8 +20,6 @@ void AMainPlayerController::BeginPlay()
 
 void AMainPlayerController::GameHasEnded(class AActor* EndGameFocus, bool bIsWinner)
 {
-    CrossHair->RemoveFromViewport();
-    HealthBar->RemoveFromViewport();
     if (bIsWinner)
     {
         UUserWidget* CarSubtitle = CreateWidget(this, CarSubWidget);
@@ -33,6 +31,8 @@ void AMainPlayerController::GameHasEnded(class AActor* EndGameFocus, bool bIsWin
     {
         UUserWidget* DeadScreen = CreateWidget(this, DeadScreenClass);
         if (DeadScreen != nullptr) {
+            CrossHair->RemoveFromViewport();
+            HealthBar->RemoveFromViewport();
             DeadScreen->AddToViewport();
             bShowMouseCursor = true;
             SetInputMode(FInputModeUIOnly());

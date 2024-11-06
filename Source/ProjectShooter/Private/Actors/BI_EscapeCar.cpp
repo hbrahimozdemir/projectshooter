@@ -14,7 +14,7 @@ void ABI_EscapeCar::Interact(ACharacter* Character)
 
     if (PlayerCharacter->isPlayerGetDocument==true)
     {
-        UGameplayStatics::OpenLevel(this, FName("DocumentsComplete"));
+        UGameplayStatics::OpenLevel(this, FName("DocumentsCompleted"));
 
     }
     else

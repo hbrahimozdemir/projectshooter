@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "Weapon/Weapon.h"
 #include "Actors/BaseItem.h"
+#include "TimerManager.h"
 #include "ShooterGameMode.h"
 
 // Sets default values
@@ -84,6 +85,7 @@ float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dama
     DamageToApply = FMath::Min(CurrentHealth, DamageToApply);
     CurrentHealth -= DamageToApply;
     UE_LOG(LogTemp, Warning, TEXT("Health Left %f"), CurrentHealth);
+
     if (IsDead())
     {
         AShooterGameMode* GameMode = GetWorld()->GetAuthGameMode<AShooterGameMode>();
@@ -95,11 +97,28 @@ float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dama
         DetachFromControllerPendingDestroy();
         GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
+        // Eðer ölen karakter player deðilse, 3 saniye sonra yok olmasýný planla
+        if (!IsPlayerControlled())
+        {
+            GetWorldTimerManager().SetTimer(DestroyTimerHandle, this, &AShooterCharacter::DestroyCharacterAndWeapon, 3.0f, false);
+        }
     }
 
     return DamageToApply;
 }
 
+void AShooterCharacter::DestroyCharacterAndWeapon()
+{
+    // Eðer karakterin elinde bir silah varsa, silahý yok et
+    if (Weapon)
+    {
+        Weapon->Destroy();
+        Weapon = nullptr;
+    }
+
+    // Karakteri yok et
+    Destroy();
+}
 bool AShooterCharacter::IsDead() const
 {
     return CurrentHealth <= 0;

@@ -23,9 +23,6 @@ AShooterCharacter::AShooterCharacter()
     FollowCamera->SetupAttachment(CameraBoom);
     FollowCamera->bUsePawnControlRotation = false;
 
-    //// Character movement settings
-    //bUseControllerRotationYaw = false;
-    //GetCharacterMovement()->bOrientRotationToMovement = true;
     CurrentHealth = MaxHealth;
     // Enable crouch capability
     if (GetMovementComponent())
@@ -77,26 +74,6 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
     PlayerInputComponent->BindAction(TEXT("Interact"), EInputEvent::IE_Pressed, this, &AShooterCharacter::Interact);
 }
 
-float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
-{
-    float DamageToApply = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-    DamageToApply = FMath::Min(CurrentHealth, DamageToApply);
-    CurrentHealth -= DamageToApply;
-    UE_LOG(LogTemp, Warning, TEXT("Health Left %f"), CurrentHealth);
-    if (IsDead())
-    {
-        DetachFromControllerPendingDestroy();
-        GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    }
-
-    return DamageToApply;
-}
-
-bool AShooterCharacter::IsDead() const
-{
-    return CurrentHealth <= 0;
-}
-
 void AShooterCharacter::MoveForward(float AxisValue)
 {
     AddMovementInput(GetActorForwardVector() * AxisValue);
@@ -141,11 +118,6 @@ void AShooterCharacter::ToggleCrouch()
     }
 }
 
-void AShooterCharacter::Shoot()
-{
-    Weapon->PullTrigger();
-
-}
 void AShooterCharacter::Interact()
 {
     if (CurrentInteractableItem)

@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "BaseCharacter.h"
 #include "ShooterCharacter.generated.h"
 
 class AWeapon;
 
 UCLASS()
-class PROJECTSHOOTER_API AShooterCharacter : public ACharacter
+class PROJECTSHOOTER_API AShooterCharacter : public ABaseCharacter
 {
 	GENERATED_BODY()
 
@@ -27,14 +27,6 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
-	
-	
-	bool IsDead() const;
-
-
-	void Shoot();
 
 	void Interact();
 
@@ -58,12 +50,7 @@ private:
 	void CharacterStopRunning();
 
 	void ToggleCrouch();
-	
 
-
-
-
-	//
 
 	UPROPERTY(VisibleAnywhere,Category = "Camera")
 	class USpringArmComponent* CameraBoom;
@@ -71,20 +58,6 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	class UCameraComponent* FollowCamera; 
 
-	UPROPERTY(EditDefaultsOnly)
-	float MaxHealth = 100;
-	UPROPERTY(VisibleAnywhere)
-	float CurrentHealth;
-
-	
-	
-
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<AWeapon> WeaponClass;
-
-
-	UPROPERTY()
-	AWeapon* Weapon;
 
 
 };
